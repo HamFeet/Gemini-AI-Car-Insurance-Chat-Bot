@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./App.css"
 
 function App() {
   const [message, setMessage] = useState("");
@@ -14,7 +15,19 @@ function App() {
   }, []);
 
   return (
-    <h2>{message}</h2>
+    <>
+      <div className="content">
+        <div className="title"><h3>Tina - Your Insurance Policy Assistant</h3></div>
+        <div className="questionAnswerField">
+          <p className="question">{message}</p>
+          <p className="answer">{message}</p>
+        </div>
+        <div className="inputField">
+          <textarea name="" id="inputArea"></textarea>
+          <button className="inputButton">Submit</button>
+        </div>
+      </div>
+    </>
   );
 }
 
