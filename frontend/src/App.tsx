@@ -3,8 +3,8 @@ import "./App.css"
 import React from "react";
 
 const App: React.FC = () => {
-  const [count, setCount] = useState<number>(0);
   const initialGreeting = "I'm Tina 🙋🏿‍♀️. I help you choose the right insurance policy 📜. May I ask you a few questions to make sure I reccomend the best policy for you?";
+  const [count, setCount] = useState<number>(0);
   const [questions, setQuestions] = useState<string[]>([initialGreeting]);
   const [answers, setAnswers] = useState<string[]>([]);
   const [submissionStatus, setSubmissionStatus] = useState<string>(''); 
@@ -13,19 +13,29 @@ const App: React.FC = () => {
   useEffect(() => {
     if (count > 0){ 
       setSubmissionStatus(`✅ Answer submitted. Tina is thinking of the next question...`);
-      
-      fetch("/api/generate")
-        .then(res => res.json())
-        .then(data => {
-          setQuestions(prevQuestions => [...prevQuestions, data.message]);
-          setSubmissionStatus(''); 
-        })
-        .catch(err => {
-          console.error("Fetch error:", err);
-          setSubmissionStatus('❌ Error fetching next question. Please try again.');
-        });
+      const dataToSend = {answers, questions}
+      fetch("/api/generate/question",{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend)
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then(data => {
+        setQuestions(prevQuestions => [...prevQuestions, data.message]);
+        setSubmissionStatus(''); 
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        setSubmissionStatus('❌ Error fetching next question. Please try again.');
+      });
     }
-    // No fetch on initial mount, subsequent fetches are controlled by count.
   }, [count]);
  
   const submitAnswer = () => {
@@ -44,8 +54,6 @@ const App: React.FC = () => {
       <div className="content">
         <div className="title"><h3>Tina - Your Insurance Policy Assistant</h3></div>
         <div className="questionAnswerField">
-          {/* <p className="question">{initialGreeting}</p> */}
-
           {questions.map((q, index) => {
               const answer = answers[index]; 
               
@@ -63,7 +71,6 @@ const App: React.FC = () => {
                   </React.Fragment>
               );
           })}
-          
           {submissionStatus && (
             <p className="status-confirmation p-3 bg-yellow-100 text-yellow-800 rounded-lg shadow-md font-semibold italic text-sm">
               {submissionStatus}
