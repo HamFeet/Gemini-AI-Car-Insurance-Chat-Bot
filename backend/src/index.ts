@@ -26,7 +26,7 @@ app.post("/api/generate/question", async (req: Request, res: Response) => {
 
         // Use the received data to create the prompt for Gemini
         const prompt = `You are a car insurance consultant, your job is to as questions based on the users answers. 
-        Please as questions to determine which level of cover the user needs (Mechanical breakdown Insuranse, Comprehensive Car Insurance, Third Party Car Insurance).
+        Please ask questions to determine which level of cover the user needs (Mechanical breakdown Insuranse, Comprehensive Car Insurance, Third Party Car Insurance).
         
         Here are some rules: 
             - Only ask questions if the user agrees to the first question. 
