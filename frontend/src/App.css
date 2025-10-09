@@ -50,6 +50,10 @@ body {
   width: 65%;
   display: flex;
 }
+
+.inputField textarea {
+  width: 100%;
+}
 #inputArea {
   width: 90%;
   height: 50px;
