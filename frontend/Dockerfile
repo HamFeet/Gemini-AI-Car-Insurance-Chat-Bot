@@ -1,15 +1,11 @@
-FROM node:22-alpine AS base
-WORKDIR /usr/src/app
+FROM node:22-alpine
+WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy source and build
 COPY . .
-RUN npm run build
 
-# Serve the built app
-RUN npm install -g serve
-EXPOSE 3000
-CMD ["serve", "-s", "dist"]
+EXPOSE 5173
+ENV CHOKIDAR_USEPOLLING=true
+CMD ["npm", "run", "dev"]

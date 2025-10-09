@@ -28,6 +28,7 @@ const App: React.FC = () => {
         return res.json()
       })
       .then(data => {
+        console.log("Response from backend:", data);
         setQuestions(prevQuestions => [...prevQuestions, data.message]);
         setSubmissionStatus(''); 
       })

@@ -25,7 +25,8 @@ app.post("/api/generate/question", async (req: Request, res: Response) => {
         console.log(`Received answer: "${answers}" (Questions: ${questions})`);
 
         // Use the received data to create the prompt for Gemini
-        const prompt = `You are a car insurance consultant, your job is to as questions based on the users answers. 
+        const prompt = 
+        `You are a car insurance consultant, your job is to ask questions based on the users answers. 
         Please ask questions to determine which level of cover the user needs (Mechanical breakdown Insuranse, Comprehensive Car Insurance, Third Party Car Insurance).
         
         Here are some rules: 
@@ -36,14 +37,23 @@ app.post("/api/generate/question", async (req: Request, res: Response) => {
             - You can't directly ask what type of cover the user wants.
             - Ask direct questions ie 'Do you want to include x in your cover'.
 
-        The current questions are ${questions} and the answeres where ${answers}.
+        The current questions are ${questions} and the answeres were ${answers}.
             
         Once you have asked 5-7 questions or you believe you have enough information please reccomend one of the three types of cover.`;
 
         const result = await model.generateContent(prompt);
-        
+        console.log("Gemini raw response:", result.response);
+        const text = result.response.text();
+        console.log("Gemini extracted text:", result.response.text());
+       
+
+        // Defensive check
+        if (!text || typeof text !== "string"){
+            console.error("Gemini returned a empty or invalid response");
+            return res.status(500).json({error: "Empty or invalid response from Gemini"});
+        }
         // Respond with the new question from the AI
-        res.json({ message: result.response.text() });
+        res.json({ message: text });
     } catch (err) {
         console.error("Gemini API error:", err);
         // Make sure to log the request body if you want to debug data issues
