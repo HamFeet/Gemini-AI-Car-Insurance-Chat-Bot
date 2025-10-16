@@ -21,8 +21,10 @@ app.post("/api/generate/question", async (req: Request, res: Response) => {
     try {
         // Access the data sent from the frontend via req.body
         const { answers, questions } = req.body;
+        let count = 0;
         
         console.log(`Received answer: "${answers}" (Questions: ${questions})`);
+        
 
         // Use the received data to create the prompt for Gemini
         const prompt = 
@@ -35,12 +37,20 @@ app.post("/api/generate/question", async (req: Request, res: Response) => {
             - Mechanical breakdown Insuranse is not available to trucks and racing cars. 
             - Comprehensive Car Insurance is only available to any motor vehicles less than 10 years old.
             - You can't directly ask what type of cover the user wants.
-            - Ask direct questions ie 'Do you want to include x in your cover'.
+            - Ask direct questions ie 'Do you want to include x in your cover'
+            - Don't include 'Question X' in your question
 
-        The current questions are ${questions} and the answeres were ${answers}.
+        The current questions are:
+
+        ${questions.map((element: string, index: number) => `Question ${index}: ${element}`).join(`\n`)} 
+        The answeres are: 
+
+        ${answers.map((element: string, index: number) => `Answer ${index}: ${element}`).join(`\n`)}
+
             
         Once you have asked 5-7 questions or you believe you have enough information please reccomend one of the three types of cover.`;
 
+        console.log(prompt)
         const result = await model.generateContent(prompt);
         console.log("Gemini raw response:", result.response);
         const text = result.response.text();
