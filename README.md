@@ -36,7 +36,7 @@ The purpose of this project was to:
 **Frontend**
 - HTML
 - CSS
-- JavaScript
+- TypeScript
 
 **Backend / AI**
 - Node.js
